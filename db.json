@@ -1,0 +1,57 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "admin",
+      "password": "123456",
+      "role": "admin",
+      "permissions": [
+        "view_dashboard",
+        "view_products",
+        "edit_products",
+        "delete_products"
+      ]
+    },
+    {
+      "id": "2",
+      "username": "manager",
+      "password": "123456",
+      "role": "manager",
+      "permissions": ["view_dashboard", "view_products", "edit_products"]
+    },
+    {
+      "id": "3",
+      "username": "user",
+      "password": "123456",
+      "role": "user",
+      "permissions": ["view_dashboard", "view_products"]
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "Apple",
+      "price": 2.99
+    },
+    {
+      "id": "2",
+      "name": "Bread",
+      "price": 8.99
+    },
+    {
+      "id": "3",
+      "name": "Candy",
+      "price": 21.99
+    },
+    {
+      "id": "4",
+      "name": "Iphone 17",
+      "price": 1002.99
+    },
+    {
+      "id": "5",
+      "name": "Banana",
+      "price": 12.99
+    }
+  ]
+}
