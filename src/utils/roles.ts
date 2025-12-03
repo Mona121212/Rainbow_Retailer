@@ -6,10 +6,10 @@ export const ROLES = {
 };
 
 export const PERMISSIONS = {
-    VIEW_DASHBOARD: "view_dashboarrd",
+    VIEW_DASHBOARD: "view_dashboard",
     VIEW_PRODUCTS: "view_products",
-    EDIT_PRODUCT: "edit_product",
-    DELETE_PRODUCT: "delete_product",
+    EDIT_PRODUCT: "edit_products",
+    DELETE_PRODUCT: "delete_products",
 };
 
 export const ROLES_PERMISSIONS: Record<string, string[]> = {

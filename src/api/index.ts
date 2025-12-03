@@ -9,51 +9,58 @@ export interface Product {
   price: number;
 }
 
-// login user
 export const login = async (
   username: string,
   password: string
 ): Promise<User | null> => {
   try {
-    const response = await axios.get<User[]>(`${API_URL}/users`, {
-      params: { username, password },
-    });
-    return response.data[0] || null;
-  } catch (error) {
-    console.log("Login failed: ", error);
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+    
+    console.log("Attempting login:", { username: trimmedUsername });
+    
+    const response = await axios.get<User[]>(`${API_URL}/users`);
+    console.log("Users fetched:", response.data.length);
+    
+    const user = response.data.find(
+      (u) => u.username.trim() === trimmedUsername && u.password.trim() === trimmedPassword
+    );
+    
+    if (user) {
+      console.log("Login successful:", user.username);
+    } else {
+      console.log("Login failed: No matching user found");
+      console.log("Available users:", response.data.map(u => u.username));
+    }
+    
+    return user || null;
+  } catch (error: unknown) {
+    console.error("Login failed:", error);
+    if (axios.isAxiosError(error)) {
+      if (error.request && !error.response) {
+        console.error("No response from server. Make sure JSON Server is running on http://localhost:3001");
+      } else if (error.response) {
+        console.error("Server responded with error:", error.response.status, error.response.data);
+      }
+    }
     return null;
   }
 };
 
-// fetch products
-
-export const getProducts = async (
- 
-): Promise< Product[] | null> => {
+export const getProducts = async (): Promise<Product[] | null> => {
   try {
-    const response = await axios.get<Product[]>(`${API_URL}/product`, {
-      
-    });
-      return response.data;
+    const response = await axios.get<Product[]>(`${API_URL}/products`);
+    return response.data;
   } catch (error) {
     console.log("Failed to fetch products ", error);
     return null;
   }
 };
 
-// delete product
-
-
-export const deleteProducts = async (id: string
- 
-): Promise<void> => {
+export const deleteProducts = async (id: string): Promise<void> => {
   try {
-    await axios.delete(`${API_URL}/product/${id}`
-      
-    );
-      
+    await axios.delete(`${API_URL}/products/${id}`);
   } catch (error) {
     console.log("Failed to delete product", error);
-    
   }
 };
