@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../../context/AuthContext";
 import ProtectedRoutes from "../../components/ProtectedRoutes";
+
 export const Route = createFileRoute("/_protected/dashboard")({
   component: () => (
     <ProtectedRoutes allowGuest>
@@ -12,83 +13,81 @@ export const Route = createFileRoute("/_protected/dashboard")({
 function RouteComponent() {
   const { user } = useAuth();
   const navigate = useNavigate();
+
   return (
     <section className="space-y-8">
-      <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 shadow-xl shadow-black/30">
-        <p className="text-sm uppercase tracking-[0.3em] text-slate-500">
-          {user ? "Authenticated" : "Guest mode"}
-        </p>
-        <h1 className="mt-4 text-4xl font-semibold text-white">
-          Welcome{user ? `, ${user.username}` : ", explorer"}
-        </h1>
-        <p className="mt-2 text-slate-400">
-          {user
-            ? `You are signed in as ${user.role}. Use the shortcuts below to jump into the areas you care about most.`
-            : "Sign in to unlock product management and advanced dashboard insights."}
-        </p>
-        <div className="mt-6 flex flex-wrap gap-4">
-          <span className="rounded-full border border-slate-700 px-4 py-1 text-sm text-slate-300">
-            Role: {user?.role ?? "guest"}
-          </span>
-          <span className="rounded-full border border-slate-700 px-4 py-1 text-sm text-slate-300">
-            Permissions: {user?.permissions?.length ?? 0}
-          </span>
+      {/* 欢迎卡片 */}
+      <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900/90 to-slate-950/60 p-8 shadow-xl shadow-black/30">
+        <div className="space-y-4">
+          <h1 className="text-4xl font-bold text-white">
+            Welcome{user ? `, ${user.username}` : " back"}
+          </h1>
+          <div className="flex flex-wrap gap-3">
+            <span className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-slate-300">
+              <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+              {user ? `${user.role}` : "Guest"}
+            </span>
+            {user && (
+              <span className="rounded-full border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm text-slate-300">
+                {user.permissions?.length ?? 0} permissions
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <article className="rounded-2xl border border-slate-800 bg-gradient-to-br from-indigo-600/30 to-slate-900/80 p-6 text-white">
-          <h2 className="text-lg font-semibold">Quick actions</h2>
-          <p className="mt-1 text-sm text-slate-200">
-            Navigate to commonly used sections with one click.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3">
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+          <h2 className="text-lg font-semibold text-white mb-4">
+            Quick access
+          </h2>
+          <div className="flex flex-col gap-2">
             <button
               onClick={() => navigate({ to: "/dashboard" })}
-              className="rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+              className="rounded-xl bg-slate-800 px-4 py-3 text-left text-sm font-medium text-slate-100 transition hover:bg-slate-700"
             >
               Dashboard
             </button>
             <button
               onClick={() => navigate({ to: "/products" })}
-              className="rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+              className="rounded-xl bg-slate-800 px-4 py-3 text-left text-sm font-medium text-slate-100 transition hover:bg-slate-700"
             >
               Products
             </button>
             {!user && (
               <button
                 onClick={() => navigate({ to: "/login" })}
-                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
+                className="rounded-xl bg-gradient-to-r from-sky-500 to-cyan-400 px-4 py-3 text-left text-sm font-semibold text-white transition hover:opacity-90"
               >
-                Login
+                Sign in
               </button>
             )}
           </div>
-        </article>
+        </div>
 
-        <article className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-slate-200">
-          <h2 className="text-lg font-semibold text-white">Session overview</h2>
-          <ul className="mt-4 space-y-3 text-sm">
-            <li className="flex items-center justify-between rounded-xl border border-slate-800 px-4 py-3">
-              <span>Status</span>
-              <span className="font-semibold text-emerald-400">
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+          <h2 className="text-lg font-semibold text-white mb-4">Session</h2>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between rounded-lg border border-slate-800 px-4 py-3 text-sm">
+              <span className="text-slate-400">Status</span>
+              <span className="font-medium text-emerald-400">
                 {user ? "Active" : "Guest"}
               </span>
-            </li>
-            <li className="flex items-center justify-between rounded-xl border border-slate-800 px-4 py-3">
-              <span>Role</span>
-              <span className="font-semibold text-white">
-                {user?.role ?? "guest"}
+            </div>
+            <div className="flex items-center justify-between rounded-lg border border-slate-800 px-4 py-3 text-sm">
+              <span className="text-slate-400">Role</span>
+              <span className="font-medium text-white">
+                {user?.role ?? "—"}
               </span>
-            </li>
-            <li className="flex items-center justify-between rounded-xl border border-slate-800 px-4 py-3">
-              <span>Permissions</span>
-              <span className="font-semibold text-white">
-                {user?.permissions?.join(", ") || "limited"}
+            </div>
+            <div className="flex items-center justify-between rounded-lg border border-slate-800 px-4 py-3 text-sm">
+              <span className="text-slate-400">Permissions</span>
+              <span className="font-medium text-white">
+                {user?.permissions?.length ?? 0}
               </span>
-            </li>
-          </ul>
-        </article>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

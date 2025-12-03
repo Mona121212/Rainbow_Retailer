@@ -36,99 +36,85 @@ function RouteComponent() {
       return;
     }
 
-    if (window.confirm("Are you sure you want to delete this product?")) {
+    if (window.confirm("Delete this product?")) {
       await deleteProducts(id);
       window.location.reload();
     }
   };
 
   return (
-    <section className="space-y-8">
-      <header className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900/90 to-slate-950/60 p-8 text-white shadow-xl shadow-black/30">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+    <section className="space-y-6">
+      {/* Header */}
+      <div className="rounded-xl border border-slate-700 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
+        <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
-              Inventory
-            </p>
-            <h1 className="mt-2 text-4xl font-semibold">Product catalog</h1>
-            <p className="mt-2 max-w-2xl text-slate-300">
-              Review all stocked items and perform quick actions based on your
-              role permissions.
-            </p>
+            <h1 className="text-3xl font-bold text-white">Products</h1>
+            <p className="mt-1 text-slate-400">{products?.length ?? 0} items</p>
           </div>
-          <div className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-right">
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
-              Total items
-            </p>
-            <p className="text-3xl font-bold">{products?.length ?? 0}</p>
-          </div>
-        </div>
-        <div className="mt-6 flex flex-wrap gap-4 text-sm text-slate-300">
-          <span className="rounded-full border border-white/20 px-4 py-1">
-            Signed in as {user?.username}
-          </span>
-          {canEdit && (
-            <span className="rounded-full border border-emerald-400/30 px-4 py-1 text-emerald-300">
-              Edit access
-            </span>
-          )}
-          {canDelete && (
-            <span className="rounded-full border border-rose-400/30 px-4 py-1 text-rose-300">
-              Delete access
-            </span>
+          {(canEdit || canDelete) && (
+            <div className="flex gap-2 text-sm text-slate-300">
+              {canEdit && (
+                <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-emerald-300">
+                  Edit
+                </span>
+              )}
+              {canDelete && (
+                <span className="rounded-full border border-rose-400/30 bg-rose-400/10 px-3 py-1 text-rose-300">
+                  Delete
+                </span>
+              )}
+            </div>
           )}
         </div>
-      </header>
+      </div>
 
+      {/* Empty State */}
       {(!products || products.length === 0) && (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-center text-slate-300">
-          No products available.{" "}
-          {canEdit
-            ? "Add items via the API to get started."
-            : "Reach out to an admin for access."}
+        <div className="rounded-lg border border-slate-700 bg-slate-900 p-8 text-center text-slate-400">
+          No products available
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {products?.map((product: Product) => (
-          <article
-            key={product.id}
-            className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-slate-100 shadow-lg shadow-black/20"
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
-                  #{product.id}
+      {/* Product Grid */}
+      {products && products.length > 0 && (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {products.map((product: Product) => (
+            <article
+              key={product.id}
+              className="rounded-lg border border-slate-700 bg-slate-900 p-6 transition hover:border-slate-600 hover:bg-slate-800"
+            >
+              <div className="space-y-2">
+                <p className="text-xs text-slate-500">#{product.id}</p>
+                <h3 className="font-semibold text-white">{product.name}</h3>
+                <p className="text-xl font-bold text-emerald-400">
+                  ${product.price}
                 </p>
-                <h3 className="mt-1 text-xl font-semibold">{product.name}</h3>
               </div>
-              <p className="text-2xl font-bold text-emerald-400">
-                ${product.price}
-              </p>
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              {canEdit && (
-                <button
-                  type="button"
-                  onClick={() => alert(`Edit: ${product.name}`)}
-                  className="rounded-xl border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-                >
-                  Edit
-                </button>
+
+              {(canEdit || canDelete) && (
+                <div className="mt-4 flex gap-2">
+                  {canEdit && (
+                    <button
+                      onClick={() => alert(`Edit: ${product.name}`)}
+                      className="flex-1 rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:bg-slate-700"
+                    >
+                      Edit
+                    </button>
+                  )}
+                  {canDelete && (
+                    <button
+                      onClick={(e) => handleDelete(product.id, e)}
+                      className="flex-1 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm font-medium text-rose-300 transition hover:bg-rose-500/20"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               )}
-              {canDelete && (
-                <button
-                  type="button"
-                  onClick={(e) => handleDelete(product.id, e)}
-                  className="rounded-xl border border-rose-500/40 px-4 py-2 text-sm font-semibold text-rose-300 transition hover:bg-rose-500/10"
-                >
-                  Delete
-                </button>
-              )}
-            </div>
-          </article>
-        ))}
-      </div>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

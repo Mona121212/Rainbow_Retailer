@@ -11,16 +11,19 @@ function RouteComponent() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>("");
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+
     const trimmedUsername = username.trim();
     const trimmedPassword = password.trim();
 
     if (!trimmedUsername || !trimmedPassword) {
-      alert("Please enter username and password");
+      setError("Please enter username and password");
       return;
     }
 
@@ -32,93 +35,91 @@ function RouteComponent() {
       authLogin(user);
       navigate({ to: "/dashboard" });
     } else {
-      alert("Invalid credentials");
+      setError("Invalid credentials");
       setPassword("");
     }
   };
 
   return (
-    <section className="flex min-h-[60vh] flex-col items-center justify-center gap-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-black px-6 py-10 text-white shadow-2xl md:flex-row md:gap-16">
-      {/* 左侧 - 品牌和说明 */}
-      <div className="flex-1 space-y-6 md:pr-8">
-        <div>
-          <h1 className="text-5xl font-bold leading-tight">
-            Welcome to
-            <span className="block bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
-              Rainbow Retailer
-            </span>
+    <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4">
+      <div className="w-full max-w-md space-y-8">
+        {/* Logo */}
+        <div className="text-center">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 to-cyan-400">
+            <span className="text-lg font-bold text-white">RR</span>
+          </div>
+          <h1 className="mt-4 text-3xl font-bold text-white">
+            Rainbow Retailer
           </h1>
         </div>
 
-        <div className="grid gap-3">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Admin
+        {/* Demo Credentials */}
+        <div className="space-y-2 rounded-xl border border-slate-700 bg-slate-900/50 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            Demo accounts
+          </p>
+          <div className="space-y-1 text-sm text-slate-300">
+            <p>
+              <span className="text-slate-500">admin:</span> admin / 123456
             </p>
-            <p className="mt-2 font-mono text-sm text-slate-200">
-              admin / 123456
+            <p>
+              <span className="text-slate-500">manager:</span> manager / 123456
             </p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Manager
-            </p>
-            <p className="mt-2 font-mono text-sm text-slate-200">
-              manager / 123456
-            </p>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              User
-            </p>
-            <p className="mt-2 font-mono text-sm text-slate-200">
-              user / 123456
+            <p>
+              <span className="text-slate-500">user:</span> user / 123456
             </p>
           </div>
         </div>
+
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Username */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-slate-300">
+              Username
+            </label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder=" "
+              disabled={isLoading}
+              className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-2.5 text-white placeholder:text-slate-500 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 disabled:opacity-50"
+            />
+          </div>
+
+          {/* Password */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-slate-300">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder=" "
+              disabled={isLoading}
+              className="w-full rounded-lg border border-slate-600 bg-slate-900 px-4 py-2.5 text-white placeholder:text-slate-500 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 disabled:opacity-50"
+            />
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <p className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-sm text-rose-300">
+              {error}
+            </p>
+          )}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full rounded-lg bg-gradient-to-r from-sky-500 to-cyan-400 py-2.5 font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:shadow-lg hover:shadow-sky-500/50 disabled:opacity-50 disabled:shadow-none"
+          >
+            {isLoading ? "Signing in..." : "Sign in"}
+          </button>
+        </form>
       </div>
-
-      {/* 右侧 - 登录表单 */}
-      <form
-        onSubmit={handleSubmit}
-        className="w-full flex-1 space-y-6 rounded-2xl bg-white/5 p-8 backdrop-blur md:max-w-md"
-      >
-        <div className="space-y-3">
-          <label className="block text-sm font-semibold text-slate-300">
-            Username
-          </label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter username"
-            className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-slate-500 focus:border-sky-400 focus:bg-white/20 focus:outline-none transition"
-            disabled={isLoading}
-          />
-        </div>
-
-        <div className="space-y-3">
-          <label className="block text-sm font-semibold text-slate-300">
-            Password
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-            className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-slate-500 focus:border-sky-400 focus:bg-white/20 focus:outline-none transition"
-            disabled={isLoading}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full rounded-xl bg-gradient-to-r from-sky-500 to-cyan-400 py-3 text-center text-base font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
-        >
-          {isLoading ? "Signing in..." : "Sign In"}
-        </button>
-      </form>
-    </section>
+    </div>
   );
 }
