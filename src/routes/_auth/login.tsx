@@ -10,8 +10,10 @@ export const Route = createFileRoute("/_auth/login")({
 function RouteComponent() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedUsername = username.trim();
@@ -22,88 +24,99 @@ function RouteComponent() {
       return;
     }
 
+    setIsLoading(true);
     const user = await login(trimmedUsername, trimmedPassword);
+    setIsLoading(false);
+
     if (user) {
       authLogin(user);
       navigate({ to: "/dashboard" });
     } else {
-      alert("Invalid credentials. Please check the console (F12) for details.");
-      setUsername("");
+      alert("Invalid credentials");
       setPassword("");
     }
   };
+
   return (
-    <section className="flex min-h-[60vh] flex-col justify-center gap-10 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-black px-6 py-10 text-white shadow-2xl md:flex-row md:items-center">
-      <div className="flex-1 space-y-4">
-        <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-300">
-          Access Management
-        </p>
-        <h1 className="text-4xl font-bold leading-tight md:text-5xl">
-          Sign in to manage{" "}
-          <span className="text-sky-400">Rainbow Retailer</span>
-        </h1>
-        <p className="text-slate-300">
-          Use the demo accounts from{" "}
-          <code className="rounded bg-black/40 px-2">db.json</code> to explore
-          how different roles unlock features across the dashboard and product
-          catalog.
-        </p>
-        <ul className="grid gap-3 text-sm text-slate-300 md:grid-cols-2">
-          <li className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-            <p className="text-xs uppercase tracking-wide text-slate-400">
+    <section className="flex min-h-[60vh] flex-col items-center justify-center gap-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-black px-6 py-10 text-white shadow-2xl md:flex-row md:gap-16">
+      {/* 左侧 - 品牌和说明 */}
+      <div className="flex-1 space-y-6 md:pr-8">
+        <div>
+          <h1 className="text-5xl font-bold leading-tight">
+            Welcome to
+            <span className="block bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+              Rainbow Retailer
+            </span>
+          </h1>
+        </div>
+
+        <div className="grid gap-3">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Admin
             </p>
-            admin / 123456
-          </li>
-          <li className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-            <p className="text-xs uppercase tracking-wide text-slate-400">
+            <p className="mt-2 font-mono text-sm text-slate-200">
+              admin / 123456
+            </p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Manager
             </p>
-            manager / 123456
-          </li>
-          <li className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-            <p className="text-xs uppercase tracking-wide text-slate-400">
+            <p className="mt-2 font-mono text-sm text-slate-200">
+              manager / 123456
+            </p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               User
             </p>
-            user / 123456
-          </li>
-        </ul>
+            <p className="mt-2 font-mono text-sm text-slate-200">
+              user / 123456
+            </p>
+          </div>
+        </div>
       </div>
 
+      {/* 右侧 - 登录表单 */}
       <form
         onSubmit={handleSubmit}
-        className="flex-1 space-y-6 rounded-2xl bg-white/5 p-8 backdrop-blur"
+        className="w-full flex-1 space-y-6 rounded-2xl bg-white/5 p-8 backdrop-blur md:max-w-md"
       >
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-slate-200">
+        <div className="space-y-3">
+          <label className="block text-sm font-semibold text-slate-300">
             Username
           </label>
           <input
-            className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-sky-400 focus:bg-white focus:outline-none"
             type="text"
             value={username}
-            placeholder="Enter username"
             onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter username"
+            className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-slate-500 focus:border-sky-400 focus:bg-white/20 focus:outline-none transition"
+            disabled={isLoading}
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-slate-200">
+        <div className="space-y-3">
+          <label className="block text-sm font-semibold text-slate-300">
             Password
           </label>
           <input
-            className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-sky-400 focus:bg-white focus:outline-none"
             type="password"
             value={password}
-            placeholder="Enter password"
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter password"
+            className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-slate-500 focus:border-sky-400 focus:bg-white/20 focus:outline-none transition"
+            disabled={isLoading}
           />
         </div>
+
         <button
           type="submit"
-          className="w-full rounded-xl bg-gradient-to-r from-sky-500 to-cyan-400 py-3 text-center text-lg font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:scale-[1.01]"
+          disabled={isLoading}
+          className="w-full rounded-xl bg-gradient-to-r from-sky-500 to-cyan-400 py-3 text-center text-base font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
         >
-          Login
+          {isLoading ? "Signing in..." : "Sign In"}
         </button>
       </form>
     </section>
